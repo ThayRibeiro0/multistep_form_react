@@ -1,34 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { GrFormNext, GrFormPrevious } from 'react-icons/gr'
+import { FiSend } from 'react-icons/fi'
+import UserForm from './components/UserForm'
+import ReviewForm from './components/ReviewForm'
+import Thanks from './components/Thanks'
+import Steps from './components/Steps'
+
+// Hooks
+import { useForm } from './hooks/useForm'
+
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const formComponents = [<UserForm />, <ReviewForm />, <Thanks />]
+
+  const { currentStep, currentComponent, changeStep, isLastStep, isFirstStep } = useForm(formComponents)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <div className="header">
+        <h2>Leave your review</h2>
+        <p>We are happy with your purchase, use the form below to review the product</p>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="form-container">
+        <Steps currentStep={currentStep} />
+        <form onSubmit={(e) => changeStep(currentStep + 1, e)}>
+          <div className="inputs-container">{currentComponent}</div>
+          <div className="actions">
+            {!isFirstStep && (
+              <button type='button' onClick={() => changeStep(currentStep - 1)}>
+                <GrFormPrevious />
+                <span>Return</span>
+              </button>
+            )}
+            {!isLastStep ? (
+              <button type='submit'>
+                <span>Next</span>
+                <GrFormNext />
+              </button>
+            ) : (
+              <button type='button'>
+                <span>Send</span>
+                <FiSend />
+              </button>
+            )}
+          </div>
+        </form>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
